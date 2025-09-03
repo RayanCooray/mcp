@@ -1,0 +1,24 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+backend/dist/
+playground/.next/
+playground/out/
+
+# Environment files
+backend/.env
+backend/.env.local
+playground/.env
+playground/.env.local
+*.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
