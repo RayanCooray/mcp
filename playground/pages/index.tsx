@@ -9,6 +9,7 @@ export default function Home() {
 
   const API = process.env.NEXT_PUBLIC_API_BASE || "https://mcp-mdj2.onrender.com";
 
+
   async function upload() {
     if (!file) return;
     const fd = new FormData();

@@ -1,19 +1,40 @@
 # MCP Server – Coding Challenge
 
-## Features
-- Upload and parse a resume (PDF or text)
-- Chat endpoint to answer questions about your CV
-- Email sending endpoint (SMTP via nodemailer)
-- Minimal Next.js playground UI
+This repository contains the **Model Context Protocol (MCP) server** for the coding challenge. It includes:
 
-## Running locally
+- A backend API for parsing your resume and chatting about it
+- An email sending endpoint
+- An optional Next.js playground for testing the backend
+- **Gemini API integration** for AI-powered CV chat responses
+
+---
+
+## Features
+
+- **Upload & Parse Resume**: Supports PDF or text files.
+- **Chat Endpoint**: Ask questions about your CV (e.g., "What role did I have at my last position?") powered by **Gemini API**.
+- **Email Sending Endpoint**: Send emails using SMTP via nodemailer.
+- **Next.js Playground**: Minimal frontend UI to interact with the backend.
+
+---
+
+## Live Deployment
+
+- **Backend (API)**: [https://mcp-mdj2.onrender.com](https://mcp-mdj2.onrender.com)
+- **Backend is Deployed on Render**
+- **Front end is deployed on vercel**
+- **Frontend (Playground)**: [https://mcp-theta-ochre.vercel.app/](https://mcp-theta-ochre.vercel.app/)
+
+---
+
+## Running Locally
 
 ### Backend
 ```bash
 cd backend
-cp .env.example .env   # fill in SMTP creds
+cp .env.example .env   # Fill in your SMTP credentials and GEMINI_API_KEY
 npm install
-npm run dev
+npm run dev             # Starts backend server on http://localhost:4000
 ```
 
 ### Frontend
