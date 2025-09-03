@@ -176,6 +176,11 @@ export default function Home() {
         (All inputs are disabled while uploading or waiting for a response)
       </p>
 
+      <p style={styles.guide}>
+        Step 3: If this candidate suits you, send them an email.<br />
+        (please note that this is a personal smtp configured email for testing do not overuse)
+      </p>
+
       <div style={styles.card}>
        
         <input
