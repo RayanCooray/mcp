@@ -7,7 +7,7 @@ export default function Home() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
 
-  const API = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
+  const API = process.env.NEXT_PUBLIC_API_BASE || "https://mcp-mdj2.onrender.com";
 
   async function upload() {
     if (!file) return;
