@@ -9,10 +9,18 @@ export default function Home() {
 
   const [uploading, setUploading] = useState(false);
   const [asking, setAsking] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [resumeUploaded, setResumeUploaded] = useState(false);
+  const [showEmailCard, setShowEmailCard] = useState(false);
+
+  const [emailRecipient, setEmailRecipient] = useState("");
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
 
   const API = process.env.NEXT_PUBLIC_API_BASE || "https://mcp-mdj2.onrender.com";
 
+  // const API = "http://localhost:4000";
+  
   async function upload() {
     if (!file) return;
     setUploading(true);
@@ -52,6 +60,7 @@ export default function Home() {
     }
   }
 
+
   async function ask() {
     if (!question.trim()) return;
     setAsking(true);
@@ -89,6 +98,7 @@ export default function Home() {
     }
   }
 
+
   const renderAnswer = () => {
     if (!answer) return null;
     const lines = answer.split("\n");
@@ -114,6 +124,50 @@ export default function Home() {
     });
   };
 
+
+  async function sendEmail() {
+    if (!emailRecipient.trim() || !emailSubject.trim() || !emailBody.trim()) return;
+    setSendingEmail(true);
+    try {
+      const r = await fetch(`${API}/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipient: emailRecipient,
+          subject: emailSubject,
+          body: emailBody,
+        }),
+      });
+      const j = await r.json();
+
+      if (j.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Email Sent!",
+          text: `Email successfully sent to ${emailRecipient}`,
+        });
+        setEmailRecipient("");
+        setEmailSubject("");
+        setEmailBody("");
+        setShowEmailCard(false);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Email Failed",
+          text: j.error || "Something went wrong.",
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Email Failed",
+        text: "Network or server error.",
+      });
+    } finally {
+      setSendingEmail(false);
+    }
+  }
+
   return (
     <main style={styles.main}>
       <h1 style={styles.title}>MCP Playground</h1>
@@ -123,6 +177,7 @@ export default function Home() {
       </p>
 
       <div style={styles.card}>
+       
         <input
           type="file"
           title="Upload Resume"
@@ -138,7 +193,7 @@ export default function Home() {
           {uploading ? "Uploading..." : "Upload Resume"}
         </button>
 
-       
+      
         {status && (
           <div style={styles.statusCard}>
             {status.split("\n").map((line, i) => (
@@ -149,7 +204,6 @@ export default function Home() {
           </div>
         )}
 
-       
         <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
@@ -167,6 +221,53 @@ export default function Home() {
 
         
         {answer && <div style={styles.answerCard}>{renderAnswer()}</div>}
+
+        <button
+          onClick={() => setShowEmailCard((prev) => !prev)}
+          style={{ ...styles.button, backgroundColor: "#28a745" }}
+        >
+          {showEmailCard ? "Hide Email" : "Send Email"}
+        </button>
+
+        {showEmailCard && (
+          <div style={styles.emailCard}>
+            <input
+              value={emailRecipient}
+              onChange={(e) => setEmailRecipient(e.target.value)}
+              placeholder="Recipient Email"
+              style={styles.textInput}
+              disabled={uploading || asking || sendingEmail}
+            />
+            <input
+              value={emailSubject}
+              onChange={(e) => setEmailSubject(e.target.value)}
+              placeholder="Subject"
+              style={styles.textInput}
+              disabled={uploading || asking || sendingEmail}
+            />
+            <textarea
+              value={emailBody}
+              onChange={(e) => setEmailBody(e.target.value)}
+              placeholder="Email Body"
+              style={{ ...styles.textInput, height: 100 }}
+              disabled={uploading || asking || sendingEmail}
+            />
+            <button
+              onClick={sendEmail}
+              style={styles.button}
+              disabled={
+                uploading ||
+                asking ||
+                sendingEmail ||
+                !emailRecipient ||
+                !emailSubject ||
+                !emailBody
+              }
+            >
+              {sendingEmail ? "Sending..." : "Send Email"}
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );
@@ -246,6 +347,16 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: "0 5px 15px rgba(0,0,0,0.05)",
     maxHeight: 400,
     overflowY: "auto",
+  },
+  emailCard: {
+    marginTop: 20,
+    padding: 20,
+    borderRadius: 15,
+    backgroundColor: "#fffbe6",
+    boxShadow: "0 5px 15px rgba(0,0,0,0.05)",
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
   },
   heading: { fontSize: 18, fontWeight: 700, marginTop: 15, color: "#333" },
   paragraph: { fontSize: 14, margin: 5, lineHeight: 1.5, color: "#555" },

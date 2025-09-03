@@ -7,6 +7,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { parseBufferToResume } from "./resumeParser";
 import { handleChatWithAI } from "./chat";
+import { sendEmail } from "./email";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -36,6 +37,21 @@ app.post("/chat", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to handle chat" });
+  }
+});
+
+
+app.post("/send-email", async (req, res) => {
+  try {
+    const { recipient, subject, body } = req.body;
+    if (!recipient || !subject || !body)
+      return res.status(400).json({ error: "Recipient, subject, and body are required" });
+
+    await sendEmail(recipient, subject, body);
+    res.json({ ok: true });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Failed to send email" });
   }
 });
 
